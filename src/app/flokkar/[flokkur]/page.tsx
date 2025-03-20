@@ -9,7 +9,7 @@ export default async function FlokkaPage({
   const { flokkur } = await params;
 
   return (
-    <div>
+    <div className="w-5/6 mx-auto flex flex-col items-center justify-items-center min-h-screen gap-12 font-[family-name:var(--font-geist-sans)]">
       <Navigation />
       <Category slug={flokkur} />
     </div>

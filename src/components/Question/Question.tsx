@@ -7,33 +7,42 @@ export function Question({
   question: QuestionType;
 }): JSX.Element {
   const [answerId, setAnswerId] = React.useState<number | null>(null);
+  const [submitted, setSubmitted] = React.useState(false);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('submit, valið svar:', answerId);
+    setSubmitted(true);
   };
 
   return (
-    <div>
-      <h2>{question.text}</h2>
-      <form onSubmit={onSubmit}>
+    <div className="flex flex-col gap-1">
+      <h2 className="font-bold">{question.text}</h2>
+      <form onSubmit={onSubmit} className="flex flex-col gap-2 items-start">
         <ul>
           {question.answers.map((answer) => {
-            const isCorrect = answerId === answer.id && answer.correct;
+            const isSelected = answerId === answer.id;
+            const showResult = submitted && isSelected;
+            const isCorrect = showResult && answer.correct;
             return (
-              <li key={answer.id}>
+              <li key={answer.id} className="flex gap-2 items-center">
                 <input
                   type="radio"
                   name="answer"
                   value={answer.id}
+                  checked={isSelected}
                   onChange={() => setAnswerId(answer.id)}
+                  disabled={submitted}
                 />
-                {answer.text}—{isCorrect ? 'RÉTT' : 'RANGT'}
+                {answer.text} {isCorrect ? 'RÉTT' : showResult ? 'RANGT' : ''}
               </li>
             );
           })}
         </ul>
-        <button>Svara</button>
+        <button 
+          type="submit"
+          disabled={answerId === null || submitted}
+          className="bg-neutral-100 hover:bg-neutral-200 transition ease-in-out border border-neutral-400 px-2 rounded">Svara</button>
       </form>
     </div>
   );

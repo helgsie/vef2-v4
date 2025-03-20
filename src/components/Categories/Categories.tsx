@@ -38,15 +38,15 @@ export default function Categories({ title }: Props) {
   console.log(categories);
 
   return (
-    <div className="">
-      <h2>{title}</h2>
+    <div className="flex flex-col gap-6 items-center">
+      <h2 className="text-xl font-bold">{title}</h2>
 
       {uiState === 'loading' && <p>Sæki flokka</p>}
       {uiState === 'error' && <p>Villa við að sækja flokka</p>}
       {uiState === 'data' && categories?.data && (
-        <ul>
+        <ul className="text-center flex gap-3">
           {categories.data.map((category) => (
-            <li key={category.id}>
+            <li key={category.id} className="bg-neutral-200 px-4 py-2 rounded">
               <Link href={`/flokkar/${category.slug}`}>{category.name}</Link>
             </li>
           ))}

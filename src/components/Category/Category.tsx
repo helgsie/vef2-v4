@@ -1,16 +1,9 @@
 'use client';
 
 import { QuestionsApi } from '@/api';
-import { Question as TQuestion, Answer as TAnswer, UiState } from '@/types';
+import { Question as TQuestion, UiState } from '@/types';
 import { JSX, useEffect, useState } from 'react';
 import { Question } from '../Question/Question';
-
-interface BackendResponse<T> {
-  data: T[];
-  total?: number;
-  limit?: number;
-  offset?: number;
-}
 
 interface BackendAnswer {
   id: number;
@@ -96,7 +89,8 @@ export function Category({ slug }: { slug: string }): JSX.Element {
       return <p>Engin gögn fundust</p>;
     case 'data':
       return (
-        <div>
+        <div className="flex flex-col gap-6">
+          <h2 className="font-bold text-xl text-center">{questions[0].category.name}</h2>
           {questions.map((question) => (
             <Question key={question.id} question={question} />
           ))}
