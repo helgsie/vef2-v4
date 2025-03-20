@@ -1,6 +1,6 @@
 import { Category, Paginated, Question } from './types.js';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:8000';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
 
 export class QuestionsApi {
   async fetchFromApi<T>(url: string): Promise<T | null> {
