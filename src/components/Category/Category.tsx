@@ -44,8 +44,6 @@ export function Category({ slug }: { slug: string }): JSX.Element {
         return;
       }
 
-      console.log(response);
-
       let questionsToProcess: Partial<BackendQuestion>[] = [];
 
       if (Array.isArray(response)) {

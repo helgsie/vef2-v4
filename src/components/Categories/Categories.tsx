@@ -22,9 +22,6 @@ export default function Categories({ title }: Props) {
       const api = new QuestionsApi();
       const categoriesResponse = await api.getCategories();
 
-      console.log("categoriesResponse:", categoriesResponse);
-      console.log("JSON.stringify(categoriesResponse):", JSON.stringify(categoriesResponse))
-
       if (!categoriesResponse) {
         setUiState('error');
       } else {
@@ -34,8 +31,6 @@ export default function Categories({ title }: Props) {
     }
     fetchData();
   }, []);
-
-  console.log(categories);
 
   return (
     <div className="flex flex-col gap-6 items-center">
