@@ -13,9 +13,7 @@ type Props = {
 
 export default function Categories({ title }: Props) {
   const [uiState, setUiState] = useState<UiState>('initial');
-  const [categories, setCategories] = useState<Paginated<Category> | null>(
-    null,
-  );
+  const [categories, setCategories] = useState<Paginated<Category> | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -23,6 +21,9 @@ export default function Categories({ title }: Props) {
 
       const api = new QuestionsApi();
       const categoriesResponse = await api.getCategories();
+
+      console.log("categoriesResponse:", categoriesResponse);
+      console.log("JSON.stringify(categoriesResponse):", JSON.stringify(categoriesResponse))
 
       if (!categoriesResponse) {
         setUiState('error');
@@ -42,10 +43,10 @@ export default function Categories({ title }: Props) {
 
       {uiState === 'loading' && <p>Sæki flokka</p>}
       {uiState === 'error' && <p>Villa við að sækja flokka</p>}
-      {uiState === 'data' && (
+      {uiState === 'data' && categories?.data && (
         <ul>
-          {categories?.data.map((category, index) => (
-            <li key={index}>
+          {categories.data.map((category) => (
+            <li key={category.id}>
               <Link href={`/flokkar/${category.slug}`}>{category.name}</Link>
             </li>
           ))}
