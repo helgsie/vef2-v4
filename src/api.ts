@@ -1,6 +1,6 @@
 import { Category, Paginated, Question } from './types.js';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:5000/';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000/';
 
 export class QuestionsApi {
     async fetchFromApi<T>(url: string): Promise<T | null> {
@@ -8,17 +8,17 @@ export class QuestionsApi {
         try {
             response = await fetch(url);
         } catch (e) {
-            console.error('error fetching from api', url, e);
+            console.error('villa við að sækja gögn úr api', url, e);
             return null;
         }
 
         if (!response.ok) {
-            console.error('non 2xx status from API', url);
+            console.error('ekki 2xx status frá API', url);
             return null;
         }
 
         if (response.status === 404) {
-            console.error('404 from API', url);
+            console.error('404 villa frá API', url);
             return null;
         }
 
@@ -26,7 +26,7 @@ export class QuestionsApi {
         try {
             json = await response.json();
         } catch (e) {
-            console.error('error parsing json', url, e);
+            console.error('villa við að túlka json', url, e);
             return null;
         }
 
