@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface Category {
     id: string;
     name: string;
@@ -53,7 +55,9 @@ export default function CategoryItem({
             </div>
         ) : (
             <div className="flex items-center justify-between w-full">
-                <span>{category.name}</span>
+                <Link href={`/flokkar/${category.slug}`}>
+                    <span>{category.name}</span>
+                </Link>
                 <div className="space-x-2">
                     <button 
                         className="text-blue-500 hover:underline"
