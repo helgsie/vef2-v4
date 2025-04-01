@@ -15,7 +15,7 @@ export function Question({question}: {question: QuestionType}): JSX.Element {
     <div className="flex flex-col gap-1">
       <h2 className="font-bold">{question.questionText}</h2>
       <form onSubmit={onSubmit} className="flex flex-col gap-3 items-start">
-        <ul className="flex flex-col gap-2">
+        <ul className="flex flex-col gap-2 w-full">
           {question.answers.map((answer) => {
             const isSelected = answerId === answer.id;
             const showResult = submitted && isSelected;
