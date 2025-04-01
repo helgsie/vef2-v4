@@ -55,7 +55,7 @@ export default function CategoryItem({
             </div>
         ) : (
             <div className="flex items-center justify-between w-full">
-                <Link href={`/flokkar/${category.slug}`}>
+                <Link href={`/flokkar/${category.slug}`} className="hover:underline">
                     <span>{category.name}</span>
                 </Link>
                 <div className="space-x-2">

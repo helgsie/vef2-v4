@@ -14,14 +14,14 @@ export function Question({question}: {question: QuestionType}): JSX.Element {
   return (
     <div className="flex flex-col gap-1">
       <h2 className="font-bold">{question.questionText}</h2>
-      <form onSubmit={onSubmit} className="flex flex-col gap-2 items-start">
-        <ul>
+      <form onSubmit={onSubmit} className="flex flex-col gap-3 items-start">
+        <ul className="flex flex-col gap-2">
           {question.answers.map((answer) => {
             const isSelected = answerId === answer.id;
             const showResult = submitted && isSelected;
             const isCorrect = showResult && answer.isCorrect;
             return (
-              <li key={answer.id} className="flex gap-2 items-center">
+              <li key={answer.id} className={`${isCorrect ? 'bg-lime-200' : showResult ? 'bg-red-200' : ''} flex gap-2 rounded-xl p-2 items-center`}>
                 <input
                   type="radio"
                   name="answer"
@@ -30,7 +30,7 @@ export function Question({question}: {question: QuestionType}): JSX.Element {
                   onChange={() => setAnswerId(answer.id)}
                   disabled={submitted}
                 />
-                {answer.answer} {isCorrect ? 'RÉTT' : showResult ? 'RANGT' : ''}
+                {answer.answer}
               </li>
             );
           })}
