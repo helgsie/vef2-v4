@@ -1,4 +1,3 @@
-import Categories from '@/components/Categories/Categories';
 import CategoryManagement from '@/components/CategoryManagement/CategoryManagement';
 import Navigation from '@/components/Navigation/Navigation';
 

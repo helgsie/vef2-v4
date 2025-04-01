@@ -63,8 +63,7 @@ export class QuestionsApi {
     async getQuestions(
         categorySlug: string,
     ): Promise<Paginated<Question> | null> {
-        const url = BASE_URL + `/questions?category=${categorySlug}`;
-        // new URL()
+        const url = BASE_URL + `/categories/${categorySlug}`;
 
         const response = await this.fetchFromApi<Paginated<Question>>(url);
 

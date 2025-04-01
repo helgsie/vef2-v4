@@ -1,7 +1,7 @@
 'use client';
 
 import { QuestionsApi } from '@/api';
-import { Question as TQuestion, UiState } from '@/types';
+import { Question as TQuestion, UiState, Category as TCategory } from '@/types';
 import { JSX, useEffect, useState } from 'react';
 import { Question } from '../Question/Question';
 
@@ -32,24 +32,28 @@ interface BackendQuestion {
 export function Category({ slug }: { slug: string }): JSX.Element {
   const [uiState, setUiState] = useState<UiState>('initial');
   const [questions, setQuestions] = useState<TQuestion[]>([]);
+  const [category, setCategory] = useState<TCategory | null>(null);
 
   useEffect(() => {
     async function fetchData() {
       setUiState('loading');
       const api = new QuestionsApi();
-      const response = await api.getQuestions(slug);
 
-      if (!response) {
+      // Sækjum spurningar
+      const questionsResponse = await api.getQuestions(slug);
+      console.log("response:", questionsResponse);
+
+      if (!questionsResponse || !questionsResponse.data || !Array.isArray(questionsResponse.data)) {
         setUiState('error');
         return;
       }
 
       let questionsToProcess: Partial<BackendQuestion>[] = [];
 
-      if (Array.isArray(response)) {
-        questionsToProcess = response as Partial<BackendQuestion>[];
-      } else if (response.data && Array.isArray(response.data)) {
-        questionsToProcess = response.data as Partial<BackendQuestion>[];
+      if (Array.isArray(questionsResponse)) {
+        questionsToProcess = questionsResponse as Partial<BackendQuestion>[];
+      } else if (questionsResponse.data && Array.isArray(questionsResponse.data)) {
+        questionsToProcess = questionsResponse.data as Partial<BackendQuestion>[];
       }
       
       if (questionsToProcess.length === 0) {
@@ -88,7 +92,7 @@ export function Category({ slug }: { slug: string }): JSX.Element {
     case 'data':
       return (
         <div className="flex flex-col gap-6">
-          <h2 className="font-bold text-xl text-center">{questions[0].category.name}</h2>
+          <h2 className="font-bold text-xl text-center">{category?.name || 'Flokkur'}</h2>
           {questions.map((question) => (
             <Question key={question.id} question={question} />
           ))}
