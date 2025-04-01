@@ -5,28 +5,23 @@ import { Question as TQuestion, UiState, Category as TCategory } from '@/types';
 import { JSX, useEffect, useState } from 'react';
 import { Question } from '../Question/Question';
 
-interface BackendAnswer {
-  id: number;
-  answer?: string;
-  text?: string;
-  isCorrect?: boolean;
-  correct?: boolean;
-  questionId: number;
-}
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000/';
 
-interface BackendCategory {
-  id: number | string;
-  name: string;
-  slug: string;
-}
-
-interface BackendQuestion {
+interface QuestionResponse {
   id: number;
-  questionText?: string;
-  text?: string;
-  categoryId?: number;
-  category?: BackendCategory;
-  answers: BackendAnswer[];
+  questionText: string;
+  categoryId: number;
+  category: {
+    id: number;
+    name: string;
+    slug: string;
+  };
+  answers: {
+    id: number;
+    answer: string;
+    isCorrect: boolean;
+    questionId: number;
+  }[];
 }
 
 export function Category({ slug }: { slug: string }): JSX.Element {
@@ -39,44 +34,51 @@ export function Category({ slug }: { slug: string }): JSX.Element {
       setUiState('loading');
       const api = new QuestionsApi();
 
-      // Sækjum spurningar
-      const questionsResponse = await api.getQuestions(slug);
-      console.log("response:", questionsResponse);
+      const categoryResponse = await api.getCategory(slug);
 
-      if (!questionsResponse || !questionsResponse.data || !Array.isArray(questionsResponse.data)) {
+      if (!categoryResponse || !Array.isArray(categoryResponse.questions)) {
         setUiState('error');
         return;
       }
-
-      let questionsToProcess: Partial<BackendQuestion>[] = [];
-
-      if (Array.isArray(questionsResponse)) {
-        questionsToProcess = questionsResponse as Partial<BackendQuestion>[];
-      } else if (questionsResponse.data && Array.isArray(questionsResponse.data)) {
-        questionsToProcess = questionsResponse.data as Partial<BackendQuestion>[];
-      }
       
-      if (questionsToProcess.length === 0) {
-        setUiState('empty');
-      } else {
-        setUiState('data');
+      setCategory(categoryResponse);
 
-        const mappedQuestions = questionsToProcess.map((q): TQuestion => ({
-          id: q.id ?? 0,
-          text: q.questionText || q.text || '',
-          answers: (q.answers || []).map((a: Partial<BackendAnswer>) => ({
-            id: a.id ?? 0,
-            text: a.answer || a.text || '',
-            correct: Boolean(a.isCorrect ?? a.correct ?? false)
-          })),
-          category: {
-            id: String(q.category?.id || q.categoryId || ''),
-            name: q.category?.name || '',
-            slug: q.category?.slug || slug
-          }
-        }));
+      try {
+        const questionsWithAnswers = await Promise.all(
+          categoryResponse.questions.map(async (q) => {
+            const url = `${BASE_URL}/questions/${q.id}`;
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+              console.error(`Failed to fetch question ${q.id}`);
+              throw new Error(`Failed to fetch question ${q.id}`);
+            }
+            
+            const questionData: QuestionResponse = await response.json();
+            
+            return {
+              id: questionData.id,
+              questionText: questionData.questionText,
+              answers: questionData.answers.map(a => ({
+                id: a.id,
+                answer: a.answer,
+                isCorrect: a.isCorrect
+              })),
+              category: {
+                id: categoryResponse.id.toString(),
+                name: categoryResponse.name,
+                slug: categoryResponse.slug,
+                questions: categoryResponse.questions
+              }
+            };
+          })
+        );
         
-        setQuestions(mappedQuestions);
+        setQuestions(questionsWithAnswers);
+        setUiState('data');
+      } catch (error) {
+        console.error("Error fetching question answers:", error);
+        setUiState('error');
       }
     }
     fetchData();

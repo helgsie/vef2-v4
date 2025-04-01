@@ -1,11 +1,7 @@
 import React, { JSX } from 'react';
 import { Question as QuestionType } from '../../types';
 
-export function Question({
-  question,
-}: {
-  question: QuestionType;
-}): JSX.Element {
+export function Question({question}: {question: QuestionType}): JSX.Element {
   const [answerId, setAnswerId] = React.useState<number | null>(null);
   const [submitted, setSubmitted] = React.useState(false);
 
@@ -17,13 +13,13 @@ export function Question({
 
   return (
     <div className="flex flex-col gap-1">
-      <h2 className="font-bold">{question.text}</h2>
+      <h2 className="font-bold">{question.questionText}</h2>
       <form onSubmit={onSubmit} className="flex flex-col gap-2 items-start">
         <ul>
           {question.answers.map((answer) => {
             const isSelected = answerId === answer.id;
             const showResult = submitted && isSelected;
-            const isCorrect = showResult && answer.correct;
+            const isCorrect = showResult && answer.isCorrect;
             return (
               <li key={answer.id} className="flex gap-2 items-center">
                 <input
@@ -34,7 +30,7 @@ export function Question({
                   onChange={() => setAnswerId(answer.id)}
                   disabled={submitted}
                 />
-                {answer.text} {isCorrect ? 'RÉTT' : showResult ? 'RANGT' : ''}
+                {answer.answer} {isCorrect ? 'RÉTT' : showResult ? 'RANGT' : ''}
               </li>
             );
           })}

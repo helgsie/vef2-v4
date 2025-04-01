@@ -4,6 +4,7 @@ export type Category = {
   id: string;
   slug: string;
   name: string;
+  questions: Question[];
 };
 
 export type Paginated<T> = {
@@ -15,13 +16,13 @@ export type Paginated<T> = {
 
 export type Answer = {
   id: number;
-  text: string;
-  correct: boolean;
+  answer: string;
+  isCorrect: boolean;
 };
 
 export type Question = {
   id: number;
-  text: string;
+  questionText: string;
   answers: Answer[];
   category: Category;
 };

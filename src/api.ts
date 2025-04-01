@@ -29,30 +29,26 @@ export class QuestionsApi {
             console.error('villa við að túlka json', url, e);
             return null;
         }
-
         return json as T;
     }
 
     async getCategory(slug: string): Promise<Category | null> {
         const url = BASE_URL + `/categories/${slug}`;
-
         const response = await this.fetchFromApi<Category | null>(url);
-
         return response;
     }
 
     async getCategories(): Promise<Paginated<Category> | null> {
         const url = BASE_URL + '/categories';
-
         const response = await this.fetchFromApi<Category[]>(url);
-
         if (!response) return null;
 
         return {
             data: response.map(item => ({
                 id: String(item.id), // Breyta í string til að passa í framenda type
                 name: item.name,
-                slug: item.slug
+                slug: item.slug,
+                questions: item.questions
             })),
             total: response.length,
             limit: response.length,
@@ -60,13 +56,9 @@ export class QuestionsApi {
         };
     }
 
-    async getQuestions(
-        categorySlug: string,
-    ): Promise<Paginated<Question> | null> {
+    async getQuestions(categorySlug: string): Promise<Question[] | null> {
         const url = BASE_URL + `/categories/${categorySlug}`;
-
-        const response = await this.fetchFromApi<Paginated<Question>>(url);
-
+        const response = await this.fetchFromApi<Question[]>(url);
         return response;
     }
 }
